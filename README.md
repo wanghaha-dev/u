@@ -7,5 +7,5 @@
 #### 安装
 
 ```shell
-go get -u github.com/develop1024/u
+go get -u github.com/wanghaha-dev/u
 ```
