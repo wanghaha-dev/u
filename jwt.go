@@ -3,7 +3,7 @@ package u
 import (
 	"errors"
 	"fmt"
-	"github.com/develop1024/jwt-go"
+	"github.com/dgrijalva/jwt-go"
 	"sync"
 )
 
