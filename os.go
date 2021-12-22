@@ -27,3 +27,8 @@ func (receiver *osObj) Filename(fPath string) string {
 func (receiver *osObj) FilenameNotExt(fPath string) string {
 	return strings.Trim(fPath, path.Ext(fPath))
 }
+
+// ExtNotDot 获取文件后缀不带"."
+func ExtNotDot(fPath string) string {
+	return strings.Trim(path.Ext(fPath), ".")
+}
