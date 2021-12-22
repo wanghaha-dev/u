@@ -2,6 +2,8 @@ package u
 
 import (
 	"github.com/disintegration/imaging"
+	"os"
+	"path"
 	"sync"
 )
 
@@ -41,6 +43,14 @@ func (receiver *img) Resize(sourceImagePath string, width, height int, savePath 
 	}
 
 	dstImage := imaging.Resize(src, width, height, imaging.Lanczos)
+	_, err = os.Stat(savePath)
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(path.Dir(savePath), 0777)
+		if err != nil {
+			return err
+		}
+	}
+
 	err = imaging.Save(dstImage, savePath)
 	if err != nil {
 		return err
