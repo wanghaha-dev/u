@@ -1,6 +1,7 @@
 package u
 
 import (
+	"os"
 	"path"
 	"strings"
 	"sync"
@@ -31,4 +32,16 @@ func (receiver *osObj) FilenameNotExt(fPath string) string {
 // ExtNotDot 获取文件后缀不带"."
 func (receiver *osObj) ExtNotDot(fPath string) string {
 	return strings.Trim(path.Ext(fPath), ".")
+}
+
+// CheckCreateDirs 判断文件夹是否存在，不能存在则创建
+func (receiver *osObj)CheckCreateDirs(fPath string) error {
+	_, err := os.Stat(fPath)
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(path.Dir(fPath), 0777)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
