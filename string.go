@@ -1,6 +1,7 @@
 package u
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -14,4 +15,9 @@ func SplitSpace(s string) []string {
 // Join 组合字符串
 func Join(s []string) string {
 	return strings.Join(s, "")
+}
+
+// Sf 格式化拼接字符串
+func Sf(format string, val ...interface{}) string {
+	return fmt.Sprintf(format, val...)
 }
