@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/disintegration/imaging v1.6.2
 	github.com/go-basic/uuid v1.0.0
 	github.com/golang-module/carbon/v2 v2.0.1
 	github.com/gookit/color v1.5.0
