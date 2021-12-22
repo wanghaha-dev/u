@@ -278,3 +278,33 @@ func (receiver *uTime) DatetimeToTimestamp(datetime string) int64 {
 	}
 	return parse.Unix()
 }
+
+// Year get Year
+func (receiver *uTime) Year() int {
+	return receiver.Time.Year()
+}
+
+// Month get Month
+func (receiver *uTime) Month() int {
+	return int(receiver.Time.Month())
+}
+
+// Day get Day
+func (receiver *uTime) Day() int {
+	return receiver.Time.Day()
+}
+
+// Hour get Hour
+func (receiver *uTime) Hour() int {
+	return receiver.Time.Hour()
+}
+
+// Minute get Minute
+func (receiver *uTime) Minute() int {
+	return receiver.Time.Minute()
+}
+
+// Second get Second
+func (receiver *uTime) Second() int {
+	return receiver.Time.Second()
+}
