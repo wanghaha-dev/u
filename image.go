@@ -28,6 +28,14 @@ func (receiver *img)ResizePreserveAspectRatio(width int, sourceImagePath string,
 	}
 
 	dstImage := imaging.Resize(src, width, 0, imaging.Lanczos)
+	_, err = os.Stat(savePath)
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(path.Dir(savePath), 0777)
+		if err != nil {
+			return err
+		}
+	}
+
 	err = imaging.Save(dstImage, savePath)
 	if err != nil {
 		return err
