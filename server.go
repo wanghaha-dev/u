@@ -94,8 +94,8 @@ func (receiver *Context) JSON(data interface{}) {
 func (receiver *Context) XML(data interface{}) {
 	receiver.Response.WriteHeader(200)
 	receiver.Response.Header().Set("Content-Type", "application/xml")
-	bytes, _ := xml.Marshal(data)
-	_, _ = receiver.Response.Write(bytes)
+	xmlStr, _ := xml.Marshal(data)
+	_, _ = receiver.Response.Write([]byte(`<?xml version="1.0" encoding="utf-8" ?>` + string(xmlStr)))
 }
 
 // String 字符串响应
