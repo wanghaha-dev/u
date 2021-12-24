@@ -49,8 +49,8 @@ func (receiver *osObj)CheckCreateDirs(fPath string) error {
 	return nil
 }
 
-// CopyFile 复制文件或文件夹
-func (receiver *osObj)CopyFile(src, dst string) error {
+// CopyFiles 复制文件或文件夹
+func (receiver *osObj)CopyFiles(src, dst string) error {
 	srcData, err := os.Stat(src)
 	if err != nil {
 		return err
