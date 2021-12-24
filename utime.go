@@ -2,7 +2,6 @@ package u
 
 import (
 	"github.com/golang-module/carbon/v2"
-	"sync"
 	"time"
 )
 
@@ -10,15 +9,9 @@ type uTime struct {
 	time.Time
 }
 
-var _uTime *uTime
-var _uTimeOnce sync.Once
-
 // Time 获取uTime对象
 func Time() *uTime {
-	_uTimeOnce.Do(func() {
-		_uTime = &uTime{time.Now()}
-	})
-	return _uTime
+	return &uTime{time.Now()}
 }
 
 // Now 获取当前时间UTime对象
@@ -72,7 +65,7 @@ func (receiver *uTime) DateTimeString() string {
 
 // AddYear 增加1年
 func (receiver *uTime) AddYear() *uTime {
-	receiver.Time =  carbon.CreateFromTimestamp(receiver.Unix()).AddYear().Carbon2Time()
+	receiver.Time = carbon.CreateFromTimestamp(receiver.Unix()).AddYear().Carbon2Time()
 	return receiver
 }
 

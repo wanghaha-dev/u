@@ -187,13 +187,13 @@ func Delay(callback func()) {
 
 	fmt.Println("========================= 共耗时 ===========================")
 
-	LightRed.Print(time.Now().Unix() - start / 1000 / 1000 / 1000)
+	LightRed.Print(time.Now().Unix() - start/1000/1000/1000)
 	fmt.Println(" Unix")
 
-	LightRed.Print(time.Now().UnixMilli() - start / 1000 / 1000)
+	LightRed.Print(time.Now().UnixMilli() - start/1000/1000)
 	fmt.Println(" UnixMilli")
 
-	LightRed.Print(time.Now().UnixMicro() - start / 1000)
+	LightRed.Print(time.Now().UnixMicro() - start/1000)
 	fmt.Println(" UnixMicro")
 
 	LightRed.Print(time.Now().UnixNano() - start)
@@ -201,9 +201,8 @@ func Delay(callback func()) {
 	fmt.Println("===========================================================")
 }
 
-
 // Version 输出版本
 func Version() {
-	fmt.Println("v0.0.50")
-	fmt.Println("Last update time: 2021-12-24 17:40:00")
+	fmt.Println("v0.0.51")
+	fmt.Println("Last update time: 2021-12-25 01:24:00")
 }
