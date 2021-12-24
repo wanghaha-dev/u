@@ -3,6 +3,7 @@ package u
 import (
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"sync"
 )
@@ -21,7 +22,7 @@ func OS() *osObj{
 
 // Filename 获取文件名称，包含后缀
 func (receiver *osObj) Filename(fPath string) string {
-	return path.Base(fPath)
+	return filepath.Base(fPath)
 }
 
 // FilenameNotExt 获取文件名称，不含后缀
