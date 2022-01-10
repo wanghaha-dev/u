@@ -186,7 +186,7 @@ func Delay(callback func()) {
 	callback()
 
 	fmt.Println("========================= 共耗时 ===========================")
-	time.Now().Sub(start)
+	fmt.Println(time.Now().Sub(start))
 	fmt.Println("===========================================================")
 }
 
