@@ -181,23 +181,12 @@ func DebugCyan(data ...interface{}) {
 
 // Delay 计算耗时
 func Delay(callback func()) {
-	start := time.Now().UnixNano()
+	start := time.Now()
 
 	callback()
 
 	fmt.Println("========================= 共耗时 ===========================")
-
-	LightRed.Print(time.Now().Unix() - start/1000/1000/1000)
-	fmt.Println(" Unix")
-
-	LightRed.Print(time.Now().UnixMilli() - start/1000/1000)
-	fmt.Println(" UnixMilli")
-
-	LightRed.Print(time.Now().UnixMicro() - start/1000)
-	fmt.Println(" UnixMicro")
-
-	LightRed.Print(time.Now().UnixNano() - start)
-	fmt.Println(" UnixNano")
+	time.Now().Sub(start)
 	fmt.Println("===========================================================")
 }
 
