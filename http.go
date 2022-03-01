@@ -18,11 +18,14 @@ func Http() *request {
 // Params URL参数别名
 type Params map[string]interface{}
 
-// Raw 参数别名
-type Raw map[string]interface{}
+// RawParams 参数别名
+type RawParams map[string]interface{}
 
-// Body Body参数别名
-type Body map[string]interface{}
+// BodyParams Body参数别名
+type BodyParams map[string]interface{}
+
+// JSONParams JSON参数别名
+type JSONParams map[string]interface{}
 
 // Headers 请求头别名
 type Headers map[string]interface{}
@@ -120,15 +123,21 @@ func (r *request) CustomRequest(URL string, METHOD string, v ...interface{}) *re
 
 			// 构造请求参数赋值给请求url
 			request.URL.RawQuery = q.Encode()
-		case Raw:
+		case RawParams:
 			request.Header.Set("Content-type", "text/plain")
-			for key, val := range item.(Raw) {
+			for key, val := range item.(RawParams) {
 				urlObj.Add(key, ToString(val))
 			}
-		case Body:
+		case BodyParams:
 			// 添加 body 请求参数
 			request.Header.Set("Content-type", "application/x-www-form-urlencoded")
-			for key, val := range item.(Body) {
+			for key, val := range item.(BodyParams) {
+				urlObj.Add(key, ToString(val))
+			}
+		case JSONParams:
+			// 添加 json 请求参数
+			request.Header.Set("Content-type", "application/json")
+			for key, val := range item.(JSONParams) {
 				urlObj.Add(key, ToString(val))
 			}
 		case Headers:
