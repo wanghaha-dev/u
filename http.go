@@ -19,7 +19,7 @@ func Http() *request {
 type Params map[string]interface{}
 
 // RawParams 参数别名
-type RawParams map[string]interface{}
+type RawParams string
 
 // BodyParams Body参数别名
 type BodyParams map[string]interface{}
@@ -123,23 +123,30 @@ func (r *request) CustomRequest(URL string, METHOD string, v ...interface{}) *re
 
 			// 构造请求参数赋值给请求url
 			request.URL.RawQuery = q.Encode()
+			payload = strings.NewReader(urlObj.Encode())
 		case RawParams:
 			request.Header.Set("Content-type", "text/plain")
-			for key, val := range item.(RawParams) {
-				urlObj.Add(key, ToString(val))
-			}
+			payload = strings.NewReader(item.(string))
 		case BodyParams:
 			// 添加 body 请求参数
 			request.Header.Set("Content-type", "application/x-www-form-urlencoded")
 			for key, val := range item.(BodyParams) {
 				urlObj.Add(key, ToString(val))
 			}
+			payload = strings.NewReader(urlObj.Encode())
 		case JSONParams:
 			// 添加 json 请求参数
 			request.Header.Set("Content-type", "application/json")
 			for key, val := range item.(JSONParams) {
 				urlObj.Add(key, ToString(val))
 			}
+			dataMap := make(map[string]interface{})
+			for key, val := range urlObj {
+				dataMap[key] = val[0]
+			}
+
+			data, _ := json.Marshal(dataMap)
+			payload = strings.NewReader(string(data))
 		case Headers:
 			// 设置请求头
 			for key, val := range item.(Headers) {
@@ -156,8 +163,6 @@ func (r *request) CustomRequest(URL string, METHOD string, v ...interface{}) *re
 		}
 	}
 
-	// 重新赋值
-	payload = strings.NewReader(urlObj.Encode())
 	request.Body = ioutil.NopCloser(payload)
 
 	// 发送请求
