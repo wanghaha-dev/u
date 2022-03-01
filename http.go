@@ -18,6 +18,9 @@ func Http() *request {
 // Params URL参数别名
 type Params map[string]interface{}
 
+// Raw 参数别名
+type Raw map[string]interface{}
+
 // Body Body参数别名
 type Body map[string]interface{}
 
@@ -28,11 +31,11 @@ type Headers map[string]interface{}
 type Cookies []http.Cookie
 
 // Request 请求结构体
-type request struct {}
+type request struct{}
 
 // Response 响应结构体
 type response struct {
-	Resp []byte
+	Resp  []byte
 	Error error
 }
 
@@ -95,7 +98,7 @@ func (r *request) PatchRequest(URL string, v ...interface{}) *response {
 }
 
 // CustomRequest 自定义请求支持自定义参数和请求头
-func (r *request) CustomRequest(URL string, METHOD string,  v ...interface{}) *response {
+func (r *request) CustomRequest(URL string, METHOD string, v ...interface{}) *response {
 	urlObj := url.Values{}
 	payload := strings.NewReader("")
 	request, err := http.NewRequest(METHOD, URL, nil)
@@ -117,6 +120,11 @@ func (r *request) CustomRequest(URL string, METHOD string,  v ...interface{}) *r
 
 			// 构造请求参数赋值给请求url
 			request.URL.RawQuery = q.Encode()
+		case Raw:
+			request.Header.Set("Content-type", "text/plain")
+			for key, val := range item.(Raw) {
+				urlObj.Add(key, ToString(val))
+			}
 		case Body:
 			// 添加 body 请求参数
 			request.Header.Set("Content-type", "application/x-www-form-urlencoded")
@@ -167,4 +175,3 @@ func (r *request) CustomRequest(URL string, METHOD string,  v ...interface{}) *r
 		Error: nil,
 	}
 }
-
