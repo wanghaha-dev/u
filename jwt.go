@@ -39,13 +39,13 @@ func (receiver *jwtObj) GenerateToken(secret interface{}, claims jwt.MapClaims) 
 }
 
 // ParseToken 解析token
-func (receiver *jwtObj) ParseToken(tokenString string, secret []byte) (jwt.Claims, error) {
+func (receiver *jwtObj) ParseToken(tokenString string, secret []byte) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
 
 	if token.Valid {
-		return token.Claims, err
+		return token.Claims.(jwt.MapClaims), err
 	} else if ve, ok := err.(*jwt.ValidationError); ok {
 		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
 			return nil, errors.New(fmt.Sprintf("That's not even a token"))
