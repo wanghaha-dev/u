@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"sync"
+	"time"
 )
 
 type jwtObj struct{}
@@ -21,40 +22,40 @@ func JWT() *jwtObj {
 }
 
 // GenerateToken 生成token
-func (receiver *jwtObj) GenerateToken(secret string, claims Map) (token string, err error) {
-	_mapClaims := jwt.MapClaims{}
-	for k, v := range claims {
-		_mapClaims[k] = v
+func (receiver *jwtObj) GenerateToken(secret interface{}, claims jwt.MapClaims) (string, error) {
+	// 默认24小时
+	if claims == nil {
+		claims = jwt.MapClaims{
+			"exp": time.Now().Add(time.Hour * 24).Unix(),
+		}
 	}
-	// 创建一个新的令牌对象，指定签名方法和声明
-	tokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, _mapClaims)
-	// 使用密码签名并获得完整的编码令牌作为字符串
-	token, err = tokenObj.SignedString([]byte(secret))
-	return
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString(secret)
+
+	return tokenString, err
 }
 
 // ParseToken 解析token
-func (receiver *jwtObj) ParseToken(tokenString string, secret string) (jwt.MapClaims, error) {
+func (receiver *jwtObj) ParseToken(tokenString string, secret []byte) (jwt.Claims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(secret), nil
+		return secret, nil
 	})
 
-	// Bad token
-	if token == nil {
-		return nil, errors.New("bad token")
-	}
-
-	// Invalid token
-	if !token.Valid {
-		return nil, errors.New("invalid token")
-	}
-
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims, nil
+	if token.Valid {
+		return token.Claims, err
+	} else if ve, ok := err.(*jwt.ValidationError); ok {
+		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+			return nil, errors.New(fmt.Sprintf("That's not even a token"))
+		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+			// Token is either expired or not active yet
+			return nil, errors.New(fmt.Sprintf("Timing is everything"))
+		} else {
+			return nil, errors.New(fmt.Sprintf("Couldn't handle this token: %v", err))
+		}
 	} else {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Couldn't handle this token: %v", err))
 	}
 }

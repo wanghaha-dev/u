@@ -11,7 +11,7 @@ type uTime struct {
 
 // Time 获取uTime对象
 func Time() *uTime {
-	return &uTime{time.Now()}
+	return &uTime{}
 }
 
 // Now 获取当前时间UTime对象
@@ -300,4 +300,12 @@ func (receiver *uTime) Minute() int {
 // Second get Second
 func (receiver *uTime) Second() int {
 	return receiver.Time.Second()
+}
+
+// SetInterval SetInterval
+func (receiver *uTime) SetInterval(duration time.Duration, f func()) {
+	c := time.Tick(duration)
+	for _ = range c {
+		f()
+	}
 }
