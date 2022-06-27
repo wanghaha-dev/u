@@ -192,6 +192,6 @@ func Delay(callback func()) {
 
 // Version 输出版本
 func Version() {
-	fmt.Println("v0.0.55")
-	fmt.Println("Last update time: 2022-02-25 14:22:00")
+	fmt.Println("v0.0.58")
+	fmt.Println("Last update time: 2022-03-01 22:06:00")
 }

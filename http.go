@@ -18,8 +18,14 @@ func Http() *request {
 // Params URL参数别名
 type Params map[string]interface{}
 
-// Body Body参数别名
-type Body map[string]interface{}
+// RawParams 参数别名
+type RawParams string
+
+// BodyParams Body参数别名
+type BodyParams map[string]interface{}
+
+// JSONParams JSON参数别名
+type JSONParams map[string]interface{}
 
 // Headers 请求头别名
 type Headers map[string]interface{}
@@ -28,11 +34,11 @@ type Headers map[string]interface{}
 type Cookies []http.Cookie
 
 // Request 请求结构体
-type request struct {}
+type request struct{}
 
 // Response 响应结构体
 type response struct {
-	Resp []byte
+	Resp  []byte
 	Error error
 }
 
@@ -95,7 +101,7 @@ func (r *request) PatchRequest(URL string, v ...interface{}) *response {
 }
 
 // CustomRequest 自定义请求支持自定义参数和请求头
-func (r *request) CustomRequest(URL string, METHOD string,  v ...interface{}) *response {
+func (r *request) CustomRequest(URL string, METHOD string, v ...interface{}) *response {
 	urlObj := url.Values{}
 	payload := strings.NewReader("")
 	request, err := http.NewRequest(METHOD, URL, nil)
@@ -117,12 +123,30 @@ func (r *request) CustomRequest(URL string, METHOD string,  v ...interface{}) *r
 
 			// 构造请求参数赋值给请求url
 			request.URL.RawQuery = q.Encode()
-		case Body:
+			payload = strings.NewReader(urlObj.Encode())
+		case RawParams:
+			request.Header.Set("Content-type", "text/plain")
+			payload = strings.NewReader(item.(string))
+		case BodyParams:
 			// 添加 body 请求参数
 			request.Header.Set("Content-type", "application/x-www-form-urlencoded")
-			for key, val := range item.(Body) {
+			for key, val := range item.(BodyParams) {
 				urlObj.Add(key, ToString(val))
 			}
+			payload = strings.NewReader(urlObj.Encode())
+		case JSONParams:
+			// 添加 json 请求参数
+			request.Header.Set("Content-type", "application/json")
+			for key, val := range item.(JSONParams) {
+				urlObj.Add(key, ToString(val))
+			}
+			dataMap := make(map[string]interface{})
+			for key, val := range urlObj {
+				dataMap[key] = val[0]
+			}
+
+			data, _ := json.Marshal(dataMap)
+			payload = strings.NewReader(string(data))
 		case Headers:
 			// 设置请求头
 			for key, val := range item.(Headers) {
@@ -139,8 +163,6 @@ func (r *request) CustomRequest(URL string, METHOD string,  v ...interface{}) *r
 		}
 	}
 
-	// 重新赋值
-	payload = strings.NewReader(urlObj.Encode())
 	request.Body = ioutil.NopCloser(payload)
 
 	// 发送请求
@@ -167,4 +189,3 @@ func (r *request) CustomRequest(URL string, METHOD string,  v ...interface{}) *r
 		Error: nil,
 	}
 }
-
